@@ -1,4 +1,4 @@
-    import {expect, Page} from "playwright/test";
+    import {expect, Page} from "@playwright/test";
 
     export default async function example(page: Page) {
         await page.goto("https://playwright.dev/");
