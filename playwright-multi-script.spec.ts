@@ -4,7 +4,7 @@
  * https://playwright.dev/docs/writing-tests
  */
 
-const { expect, test } = require('@playwright/test')
+import { test, expect } from '@playwright/test';
 
 // Configure the Playwright Test timeout to 210 seconds,
 // ensuring that longer tests conclude before Checkly's browser check timeout of 240 seconds.
