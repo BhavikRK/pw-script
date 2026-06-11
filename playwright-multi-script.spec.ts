@@ -48,7 +48,7 @@ test.describe('Playwright home page', () => {
     })
 
     test.describe('has Open Graph tags', () => {
-        const tags = ['description', 'title', '2url']
+        const tags = ['description', 'title', 'url']
 
         // You can create tests from an array, by calling "test()" in a loop
         tags.forEach((tag) => {
