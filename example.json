@@ -1,0 +1,10 @@
+{
+  "name": "example",
+  "steps": [
+    { "action": "goto", "url": "https://playwright.dev/" },
+    { "action": "assertTitle", "expected": "Playwright" },
+    { "action": "click", "selector": "role=link[name='Get started']" },
+    { "action": "waitForSelector", "selector": "role=heading[name='Installation']" },
+    { "action": "assertVisible", "selector": "role=heading[name='Installation']" }
+  ]
+}
