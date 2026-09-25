@@ -16,17 +16,14 @@ test('single test using two pages', async ({ browser }) => {
   // Expects page to have a heading with the name of Installation.
   await expect(page1.getByRole('heading', { name: 'Installation' })).toBeVisible();
 
+  const page2 = await context1.newPage();
+  await page2.goto('https://www.wikipedia.org');
+
   // Interact with page1 (Playwright site)
   await expect(page1).toHaveTitle(/Playwright/);
   await page1.click('text=Get started');
   const header1 = await page1.locator('h1').textContent();
   console.log('Page1 header:', header1);
-
-  const page2 = await context1.newPage();
-
-
-  await page2.goto('https://www.wikipedia.org');
-
 
   // Interact with page2 (Wikipedia site)
   await expect(page2).toHaveTitle(/Wikipedia/);
@@ -36,20 +33,7 @@ test('single test using two pages', async ({ browser }) => {
   const firstHeading = await page2.locator('#firstHeading').textContent();
   console.log('Page1 heading:', firstHeading);
 
-  const navigationTimingJson = await page1.evaluate(() =>
-      JSON.stringify(performance.getEntriesByType('navigation'))
-  )
-
-  const navigationTimingJson2 = await page2.evaluate(() =>
-      JSON.stringify(performance.getEntriesByType('navigation'))
-  )
-  const navigationTiming = JSON.parse(navigationTimingJson)
-  console.log("navigationTiming console", navigationTiming)
-
-  const navigationTiming2 = JSON.parse(navigationTimingJson2)
-  console.log("navigationTiming2 console", navigationTiming2)
-
-
+  console.error("validating error console")
   // Close contexts
   await context1.close();
 });
