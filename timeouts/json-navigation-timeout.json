@@ -1,0 +1,9 @@
+{
+    "name": "json-navigation-timeout",
+    "steps": [
+        {
+            "action": "goto",
+            "url": "https://httpbin.org/delay/10"
+        }
+    ]
+}

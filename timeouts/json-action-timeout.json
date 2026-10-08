@@ -1,0 +1,17 @@
+{
+    "name": "json-action-timeout",
+    "steps": [
+        {
+            "action": "goto",
+            "url": "data:text/html,<button>ok</button>"
+        },
+        {
+            "action": "click",
+            "selector": "#missing"
+        },
+        {
+            "action": "click",
+            "selector": "button"
+        }
+    ]
+}

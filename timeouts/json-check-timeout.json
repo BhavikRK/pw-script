@@ -1,0 +1,13 @@
+{
+    "name": "json-check-timeout",
+    "steps": [
+        {
+            "action": "waitForTimeout",
+            "ms": 4000
+        },
+        {
+            "action": "waitForTimeout",
+            "ms": 4000
+        }
+    ]
+}
