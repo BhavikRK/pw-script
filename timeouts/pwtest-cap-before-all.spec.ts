@@ -7,7 +7,7 @@ import {test} from "@playwright/test";
 
 test.beforeAll(async () => {
     test.setTimeout(600_000);
-    await new Promise((resolve) => setTimeout(resolve, 8000));
+    await new Promise((resolve) => setTimeout(resolve, 180000));
 });
 
 test("after a slow beforeAll", async () => {});
