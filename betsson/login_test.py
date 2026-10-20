@@ -8,5 +8,4 @@ def betsson_login(page: Page):
     page.locator('[data-test-id="password-input"]').fill("MKfK28XHUd1h")
     page.locator('[data-test-id="account-login-btn-1"]').click()
     page.locator('[data-test-id="balance-button"]').click()
-    page.screenshot(path=login_screenshot_path_name)
     page.locator('[data-test-id="site-menu-link-router-link-log-out"]').click()
