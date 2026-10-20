@@ -1,7 +1,6 @@
-import re
-from playwright.sync_api import Page, expect
+from playwright.sync_api import Page
 
-def betsson_login(page: Page):
+def test_has_title(page: Page):
     page.goto("https://www.betsson.com/en")
     page.get_by_text("Log in").click()
     page.locator('[data-test-id="email-input"]').fill("sreliveopsbethany.matthews@betssongroup.com")
