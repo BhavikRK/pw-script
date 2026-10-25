@@ -66,6 +66,10 @@ test.describe.configure({ timeout: 60000 });
 test.use({ launchOptions: { args: ['--disable-dev-shm-usage'] } });
 
 test.beforeEach(async ({ page }) => {
+    // Product photos are several MB a page and play no part in what is checked here; on a
+    // resource-constrained agent they starve the browser until it drops API calls
+    // (net::ERR_INSUFFICIENT_RESOURCES). The functional flow is the same without them.
+    await page.route(/\.(png|jpe?g|webp|gif)(\?|$)/, route => route.abort());
     await page.goto(BASE_URL);
     await expect(cards(page).first()).toBeVisible();
 });
