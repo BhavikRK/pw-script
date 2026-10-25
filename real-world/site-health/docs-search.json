@@ -1,0 +1,18 @@
+{
+  "name": "docs-search",
+  "steps": [
+    { "action": "goto", "url": "https://playwright.dev/" },
+    { "action": "assertTitle", "expected": "Playwright" },
+    { "action": "assertVisible", "selector": "role=link[name='Get started']" },
+    { "action": "click", "selector": "role=button[name=/Search/] >> nth=0" },
+    { "action": "waitForSelector", "selector": "role=searchbox[name='Search']" },
+    { "action": "keyboardType", "text": "network" },
+    { "action": "waitForSelector", "selector": "role=option >> text=/Mock APIs|Network/" },
+    { "action": "keyboardPress", "key": "Enter" },
+    { "action": "waitForSelector", "selector": "main h1" },
+    { "action": "assertText", "selector": "main h1", "expected": "Network" },
+    { "action": "click", "selector": "role=link[name='Docs']" },
+    { "action": "waitForSelector", "selector": "role=heading[name='Installation']" },
+    { "action": "assertVisible", "selector": "role=heading[name='Installation']" }
+  ]
+}

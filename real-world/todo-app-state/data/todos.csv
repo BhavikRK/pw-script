@@ -1,0 +1,6 @@
+title,completed
+Renew the TLS certificate for api.example.com,false
+Review the on-call runbook,true
+Rotate the staging database password,false
+Archive last quarter's incident reports,true
+Update the status page contacts,false
