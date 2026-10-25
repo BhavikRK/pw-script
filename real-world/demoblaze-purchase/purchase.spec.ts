@@ -61,6 +61,10 @@ async function openCart(page: Page, expectedLines: number) {
 // The store's API answers in about a second per call and a cart of three costs a dozen calls.
 test.describe.configure({ timeout: 60000 });
 
+// Check agents run Chromium in containers with a small /dev/shm, where image-heavy pages crash the
+// renderer ("Page crashed"). This makes Chromium use /tmp for shared memory instead.
+test.use({ launchOptions: { args: ['--disable-dev-shm-usage'] } });
+
 test.beforeEach(async ({ page }) => {
     await page.goto(BASE_URL);
     await expect(cards(page).first()).toBeVisible();
