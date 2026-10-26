@@ -37,4 +37,5 @@ test('single test using two pages', async ({ browser }) => {
   console.error("validating error console")
   // Close contexts
   await context1.close();
+  await context2.close();
 });
