@@ -18,7 +18,7 @@ from playwright.sync_api import Page, expect
 
 BASE_URL = "https://practicesoftwaretesting.com"
 CUSTOMER = (
-    os.environ.get("CUSTOMER_EMAIL", "customer@practicesoftwaretesting.com"),
+    os.environ.get("CUSTOMER_EMAIL", "customer2@practicesoftwaretesting.com"),
     os.environ.get("CUSTOMER_PASSWORD", "welcome01"),
 )
 ADMIN = (
