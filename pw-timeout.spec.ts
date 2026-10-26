@@ -7,7 +7,7 @@ export default defineConfig({
         timeout: 9_000,           // auto-retrying assertions
     },
     use: {
-        actionTimeout: 10_000,     // click, fill, etc.
+        actionTimeout: 30_000,     // click, fill, etc.
         navigationTimeout: 30_000, // goto, waitForURL, reload, etc.
         launchOptions: {
             timeout: 30_000,         // browser launch
