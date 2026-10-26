@@ -3,6 +3,7 @@ import { test, expect } from '@playwright/test';
 test('single test using two pages', async ({ browser }) => {
   // Create two independent contexts (like two different users)
   const context1 = await browser.newContext();
+  const context2 = await browser.newContext();
 
   // Open a page in each context
   const page1 = await context1.newPage();
@@ -16,7 +17,7 @@ test('single test using two pages', async ({ browser }) => {
   // Expects page to have a heading with the name of Installation.
   await expect(page1.getByRole('heading', { name: 'Installation' })).toBeVisible();
 
-  const page2 = await context1.newPage();
+  const page2 = await context2.newPage();
   await page2.goto('https://www.wikipedia.org');
 
   // Interact with page1 (Playwright site)
