@@ -13,7 +13,7 @@ import { test, expect, Browser, Page } from '@playwright/test';
  */
 const BASE_URL = 'https://practicesoftwaretesting.com';
 const CUSTOMER = {
-    email: process.env.CUSTOMER_EMAIL ?? 'customer@practicesoftwaretesting.com',
+    email: process.env.CUSTOMER_EMAIL ?? 'customer2@practicesoftwaretesting.com',
     password: process.env.CUSTOMER_PASSWORD ?? 'welcome01',
 };
 const ADMIN = {
