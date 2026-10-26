@@ -1,0 +1,27 @@
+[
+  {
+    "id": "single-phone",
+    "products": [{ "category": "Phones", "title": "Samsung galaxy s6" }],
+    "customer": { "name": "Ana Lindqvist", "country": "Sweden", "city": "Stockholm", "card": "4111111111111111", "month": "11", "year": "2029" },
+    "accepted": true
+  },
+  {
+    "id": "home-office-bundle",
+    "products": [{ "category": "Laptops", "title": "MacBook air" }, { "category": "Monitors", "title": "Apple monitor 24" }],
+    "customer": { "name": "Ravi Menon", "country": "India", "city": "Pune", "card": "5555555555554444", "month": "03", "year": "2030" },
+    "accepted": true
+  },
+  {
+    "id": "same-item-twice",
+    "products": [{ "category": "Phones", "title": "Nexus 6" }, { "category": "Phones", "title": "Nexus 6" }],
+    "customer": { "name": "Maria Gomez", "country": "Spain", "city": "Madrid", "card": "378282246310005", "month": "07", "year": "2031" },
+    "accepted": true
+  },
+  {
+    "id": "missing-card",
+    "products": [{ "category": "Laptops", "title": "Sony vaio i5" }],
+    "customer": { "name": "No Card", "country": "Norway", "city": "Oslo", "card": "", "month": "", "year": "" },
+    "accepted": false,
+    "error": "Please fill out Name and Creditcard."
+  }
+]

@@ -6,13 +6,13 @@ plain script and a JSON flow. All of them pass through the runner as written.
 
 | Folder | Site | What it exercises |
 | --- | --- | --- |
-| `toolshop-purchase` | [Toolshop](https://practicesoftwaretesting.com) | Search and sort checks, cart arithmetic checked against prices read from the page, a per-product quantity limit, checkout with an address from the postcode lookup, and an invoice that must match the cart. In Python, one test per payment method from `data/payments.json`, including an expired card that has to be refused |
-| `support-ticket-multi-user` | Toolshop | A customer and an admin in two isolated contexts: the customer files a ticket, the admin triages and answers it, and the customer sees the reply and the new status. Also covers guest form validation and the admin route guard |
+| `demoblaze-purchase` | [Demoblaze](https://www.demoblaze.com) | Categories that list only their own products, product page prices that match the catalog, cart totals checked against our own sum (including after a delete and a reload), order form validation, and a receipt whose amount matches the cart. In Python, one test per order in `data/orders.json`, including one refused for having no card |
+| `demoblaze-multi-user` | Demoblaze | Two shoppers with fresh accounts in isolated contexts: per-account server-side carts that never leak to the other shopper and follow their owner to a new device, logout, and the account rules (duplicate sign-up, wrong password, unknown user) |
 | `booking-api` | [Restful-booker](https://restful-booker.herokuapp.com) | API only, no page: token and basic auth, a create/read/search/put/patch/delete lifecycle, refused writes, rejected payloads (one known defect marked `xfail(strict=True)`), date-range search, and cleanup in teardown |
 | `site-health` | [playwright.dev](https://playwright.dev) | Synthetic monitoring: Navigation Timing budgets, console errors, failed first-party requests, a link check, SEO basics, and a search journey. `docs-journey.ts` (plain script) and `docs-search.json` (JSON flow) run as the runner's own collection types |
 | `todo-app-state` | [TodoMVC](https://demo.playwright.dev/todomvc) | State seeded from `data/todos.csv` and checked in both the UI and `localStorage`: filters that survive a reload, editing (commit, cancel, delete), and bulk actions. In Python, state is preloaded with an init script instead of being typed in |
 | `marketplace-readonly` | Amazon.in, Flipkart | **Manual-run only, never scheduled.** Read-only journeys on real marketplaces: search relevance, price sort, a guest cart round-trip on Amazon, and Flipkart's displayed price checked against its schema.org data. A bot challenge skips the test rather than failing it. See the folder's README |
-| `network-resilience` | Toolshop | `page.route` scenarios: a rewritten live response, injected latency, a 503 outage with recovery, and blocked images and analytics. In Python, a HAR is recorded and replayed with the API cut off, and a guard checks that one search makes exactly one API call |
+| `network-resilience` | Demoblaze | `page.route` scenarios: a rewritten live response, injected latency, a 503 outage with recovery, and blocked images and analytics. In Python, a HAR is recorded and replayed with the API cut off, and a guard checks that one category click makes exactly one API call |
 
 ## Running
 
@@ -20,8 +20,8 @@ plain script and a JSON flow. All of them pass through the runner as written.
 npm run test:real-world/purchase          # or any of the scripts named test:real-world/* in package.json
 
 # by hand
-asm-playwright-runner samples/real-world/toolshop-purchase/purchase-python.py \
-  --dataDir samples/real-world/toolshop-purchase/data -r result-purchase-py
+asm-playwright-runner samples/real-world/demoblaze-purchase/purchase-python.py \
+  --dataDir samples/real-world/demoblaze-purchase/data -r result-purchase-py
 ```
 
 The data-driven files read their data from `ASM_DATA_DIR`, so pass `--dataDir`. Without it they fall
@@ -29,31 +29,46 @@ back to the `data` folder beside the script.
 
 ## Credentials
 
-Every login uses the site's **published demo account**. Each one can be overridden without editing
-the script, and the variable names are chosen so their values are redacted from the trace model:
+The Demoblaze checks create their own accounts on every run, so they need none. The others use the
+site's **published demo account**, and each value can be overridden without editing the script.
+The variable names are chosen so their values are redacted from the trace model:
 
 | Variables | Used by |
 | --- | --- |
-| `TOOLSHOP_EMAIL`, `TOOLSHOP_PASSWORD` | `toolshop-purchase` |
-| `CUSTOMER_EMAIL`, `CUSTOMER_PASSWORD`, `ADMIN_EMAIL`, `ADMIN_PASSWORD` | `support-ticket-multi-user` |
+| `SHOPPER_PASSWORD` | `demoblaze-multi-user` (password for the accounts it creates) |
 | `BOOKER_USER`, `BOOKER_PASSWORD` | `booking-api` |
 | `SITE_URL`, `BUDGET_TTFB_MS`, `BUDGET_DCL_MS`, `BUDGET_LOAD_MS` | `site-health` (budgets in ms) |
 | `LATENCY_BUDGET_MS` | `booking-api` |
 
+## Running on check agents
+
+These run as Apica Playwright checks too, and the agents differ from a laptop in ways the scripts
+allow for:
+
+- **No Cloudflare-protected targets.** These samples used to use Practice Software Testing's Toolshop,
+  which sits behind Cloudflare bot protection. Cloudflare challenges the agents' datacenter IPs
+  before the page loads, so every test timed out. Demoblaze has no such protection.
+- **Chromium runs with `--disable-dev-shm-usage`.** Agents run the browser in containers with a small
+  `/dev/shm`, where image-heavy pages crash the renderer (`Page crashed`, `Target crashed`).
+- **Product images are blocked in the Demoblaze flows.** They are several MB per page, and on a
+  constrained agent the browser ran out of resources and dropped API calls
+  (`net::ERR_INSUFFICIENT_RESOURCES`). Nothing these flows check depends on images.
+- **Actions get at most 10 seconds** on the agents, waits for a response included. Every file here
+  passes with `--actionTimeout 10000`.
+
 ## Things these sites do that a check has to handle
 
-These are shared public demo sites, and some of their behaviour is deliberate. The checks assert it
-rather than working around it:
+Some of this behaviour is deliberate on these demo sites. The checks assert it rather than working
+around it:
 
-- **Toolshop resets its database regularly** (about once an hour). Product and user ids change when it
-  does, so nothing here hardcodes an id: products are found by name. A run that overlaps a reset can
-  fail once.
-- **Toolshop refuses an invoice whose city does not match its country** (`422`), and the UI shows no
-  error; the Confirm button just does nothing. The checkout therefore takes its address from the
-  shop's postcode lookup and asserts that the form shows what the lookup returned.
-- **Some products are capped at one per cart** ("You can only have one Thor Hammer in the cart.").
-- **Replying to a ticket moves it back to `IN_PROGRESS`**, so a ticket has to be resolved after the
-  reply, not before.
+- **Demoblaze reports with `window.alert()`.** Some alerts fire inside the click itself (order form
+  validation), so the alert is accepted from an event handler. A helper that waits for the click
+  first would deadlock.
+- **Demoblaze draws cart rows one at a time,** each after its own `/view` call, so cart assertions
+  allow up to 15 seconds. The `/deletecart` call that empties the cart after an order has to finish
+  before the cart is checked.
+- **Demoblaze's add-to-cart alert differs between guests and logged-in users:** "Product added" for a
+  guest, "Product added." with a full stop for a logged-in user.
 - **Restful-booker stores a non-numeric `totalprice` as `null`** instead of rejecting it. The test for
   that is a strict `xfail`, so it turns red when the API is fixed.
 - **Third-party sites answer automated clients with 401/403/429** (X and Stack Overflow do). The link
